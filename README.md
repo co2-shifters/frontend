@@ -1,2 +1,2 @@
 # frontend
-Frontend for co2-schifters
+Frontend for co2-shifters
