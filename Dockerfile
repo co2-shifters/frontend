@@ -17,4 +17,4 @@ RUN pip install -r requirements.txt
 COPY . /usr/src/app/
 
 # run development server
-CMD python ./manage.py runserver 0.0.0.0:$PORT
+CMD python ./manage.py runserver 0.0.0.0:8080
