@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Zeitraum Eingabe</title>
+    <title>CO2-Shifters - AXA Hackathon 2023</title>
 </head>
 <body>
-    <h1>Zeitraum Eingabe</h1>
+    <h1>CO2-Shifters - Verarbeitungszeitraum</h1>
     <form method="POST" action="results.html">
-        <label for="startzeit">Startdatum und Uhrzeit:</label>
-        <input type="datetime-local" id="startzeit" name="startzeit" required><br>
+        <label for="earliest_start_time">Frühester Zeitpunkt zum Starten:</label>
+        <input type="datetime-local" id="earliest_start_time" name="earliest_start_time" required><br>
 
-        <label for="endzeit">Enddatum und Uhrzeit:</label>
-        <input type="datetime-local" id="endzeit" name="endzeit" required><br>
+        <label for="latest_end_time">Spätester Endezeitpunkt der Verarbeitung:</label>
+        <input type="datetime-local" id="latest_end_time" name="latest_end_time" required><br>
 
         <label for="dauer">Dauer (in Minuten):</label>
         <input type="number" id="dauer" name="dauer" required><br>
