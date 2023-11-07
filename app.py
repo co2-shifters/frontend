@@ -18,7 +18,7 @@ def resultsPage():
     # Rendere den Plot als HTML
     plot_html = fig.to_html(full_html=False, default_height=500, default_width=700)
 
-    return render_template('index.html', plot_html=plot_html)
+    return render_template('results.html', plot_html=plot_html)
 
 if __name__ == '__main__':
     # Run the application on port 5000
