@@ -17,4 +17,4 @@ RUN pip install -r requirements.txt
 COPY . /usr/src/app/
 
 # run development server
-CMD python ./manage.py runserver 0.0.0.0:8080
+CMD ["flask", "run", "--host=0.0.0.0", "--port=8080"]
