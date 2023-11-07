@@ -12,6 +12,7 @@
   ],
   "optimisation": [
     {
+      "rank": 1,
       "optimal_start_time": "2023-11-01T09:00:00.000Z",
       "co2_consumption": 90
     }
