@@ -1,5 +1,4 @@
 import os
-
 import plotly
 import requests
 from flask import Flask, render_template, request, jsonify, send_file
@@ -191,34 +190,6 @@ def submit():
         print("Failed to call API, status code:", response.status_code)
         return jsonify(
             {'error': 'Failed to call external API', 'status_code': response.status_code}), response.status_code
-
-@app.route('/submit', methods=['POST'])
-def submit():
-    # Get the JSON data from the request
-    data = request.get_json()
-
-    # Log data to the console for testing purposes
-    print("Received data:", data)
-
-    # Define the URL of the external API
-    api_url = 'https://cr-electricity-maps-jfxxckhsja-oa.a.run.app'
-
-    # Send the data to the external API
-    response = requests.post(api_url, json=data)
-
-    # Check if the request to the external API was successful
-    if response.status_code == 200:
-        # The external API returned a successful response
-        result = response.json()
-        print("API response:", result)
-        # You can now return this result back to the client or process it further
-        return jsonify(result), 200
-    else:
-        # The external API returned an error
-        print("Failed to call API, status code:", response.status_code)
-        return jsonify({'error': 'Failed to call external API', 'status_code': response.status_code}), response.status_code
-
-
 
 if __name__ == '__main__':
     # Run the application on port 8080
