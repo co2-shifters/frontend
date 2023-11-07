@@ -12,9 +12,13 @@ def indexPage():
 
 
 def resultsPage():
-    #plot results in a graph
+    # Erstelle den Plot
+    fig = go.Figure(data=go.Scatter(x=[1, 2, 3, 4], y=[10, 11, 12, 13], mode='markers'))
 
-    return render_template('results.html', plot_html=plot_html)
+    # Rendere den Plot als HTML
+    plot_html = fig.to_html(full_html=False, default_height=500, default_width=700)
+
+    return render_template('index.html', plot_html=plot_html)
 
 if __name__ == '__main__':
     # Run the application on port 5000
