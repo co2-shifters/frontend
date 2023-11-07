@@ -1,29 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <!-- ... (anderer HTML-Code) ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Carbon Intensity Graph</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-B4gt1UdQzUme33ZuRl0rZ6UO8ty4xH0p/rMfNElR3J5JfFbUT1yQQqu8wWgUaGbm" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Deine bevorzugte Schriftart hier einfügen */
+            background-image: url('/static/images/co2-shifters_bg_1.jpg'); /* Pfade entsprechend anpassen */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .container {
+            max-width: 960px;
+            background-color: rgba(255, 255, 255, 0.8); /* Hintergrundfarbe der Containerbox */
+            padding: 20px;
+            border-radius: 10px;
+            margin: auto; /* Hinzugefügte Zeile für die Zentrierung */
+        }
+        .mt-5 {
+            margin-top: 3rem !important;
+        }
+        /* Weitere individuelle Anpassungen hier hinzufügen */
+    </style>
+
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-
 </head>
-<body class="container mt-5">
-    <div class="row">
-        <div class="col">
-            <h1>Carbon Intensity Graph</h1>
-           <!-- ... (dein vorhandener HTML-Code) ... -->
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col text-center">
+                <h1 class="mb-4">Carbon Intensity Graph</h1>
+                <!-- ... (dein vorhandener HTML-Code) ... -->
 
-            <div id="carbonIntensityPlot" data-plot='{{ plot_json | safe }}'>
-                <!-- Der Plotly-Graph aus app.py wird hier eingefügt -->
-                {{ plot_html | safe }}
+                <div id="carbonIntensityPlot" data-plot='{{ plot_json | safe }}'>
+                    <!-- Der Plotly-Graph aus app.py wird hier eingefügt -->
+                    {{ plot_html | safe }}
+                </div>
+
+                <!-- ... (weiterer HTML-Code) ... -->
             </div>
-
-<!-- ... (weiterer HTML-Code) ... -->
-
-
         </div>
     </div>
 
-    <!-- Bootstrap Bundle with Popper for Bootstrap components to function properly -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-uoEZeCfOY3X2MjNu6a/XDy92bY1njfCcsbz3xbhXW4DlHlzz7U7jfnCGb5tU5IFX" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS und Popper -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz8n8Rn4yz6lEzf6I8zVZJFg6A7G4ce5tAqsh0AZlFq0qV5BbIwJpKNSEIC" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-oLsGJzGpeB2XwEYjMOpLsGE6s50/6F7Fg1FU9pU+Zocd5kqj0H8TLq3OHxOQd3Au" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 import os
 
 import plotly
+import requests
 from flask import Flask, render_template, request, jsonify, send_file
 from plotly.offline import plot
 import plotly.graph_objects as go
@@ -25,8 +26,77 @@ data_json = {
         {
             "carbonIntensity": 107,
             "datetime": "2023-11-01T08:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 85,
+            "datetime": "2023-11-01T09:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 98,
+            "datetime": "2023-11-01T10:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 100,
+            "datetime": "2023-11-01T11:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 105,
+            "datetime": "2023-11-01T12:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 92,
+            "datetime": "2023-11-01T13:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 88,
+            "datetime": "2023-11-01T14:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 94,
+            "datetime": "2023-11-01T15:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 96,
+            "datetime": "2023-11-01T16:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 102,
+            "datetime": "2023-11-01T17:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 97,
+            "datetime": "2023-11-01T18:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 89,
+            "datetime": "2023-11-01T19:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 91,
+            "datetime": "2023-11-01T20:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 86,
+            "datetime": "2023-11-01T21:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 93,
+            "datetime": "2023-11-01T22:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 99,
+            "datetime": "2023-11-01T23:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 101,
+            "datetime": "2023-11-02T00:00:00.000Z"
+        },
+        {
+            "carbonIntensity": 103,
+            "datetime": "2023-11-02T01:00:00.000Z"
         }
     ],
+
     "optimisation": [
         {
             "rank": 1,
@@ -92,8 +162,36 @@ def resultsPage():
     return render_template('results.html', plot_html=plot_div, ranks=ranks, plot_json=plot_json)
 
 
+@app.route('/submit', methods=['POST'])
+def submit():
+    # Get the JSON data from the request
+    data = request.get_json()
+
+    # Log data to the console for testing purposes
+    print("Received data:", data)
+
+    # Define the URL of the external API
+    api_url = 'https://cr-electricity-maps-jfxxckhsja-oa.a.run.app'
+
+    # Send the data to the external API
+    response = requests.post(api_url, json=data)
+
+    # Check if the request to the external API was successful
+    if response.status_code == 200:
+        # The external API returned a successful response
+        result = response.json()
+        print("API response:", result)
+        # You can now return this result back to the client or process it further
+        response = requests.get(request.url_root + 'results')
+        return jsonify(result), 200, {response}
+    else:
+        # The external API returned an error
+        print("Failed to call API, status code:", response.status_code)
+        return jsonify(
+            {'error': 'Failed to call external API', 'status_code': response.status_code}), response.status_code
+
+
 if __name__ == '__main__':
     # Run the application on port 8080
     app.run(debug=True, port=8080)
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
-
