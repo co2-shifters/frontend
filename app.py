@@ -1,3 +1,5 @@
+import os
+
 import plotly
 from flask import Flask, render_template, request, jsonify, send_file
 from plotly.offline import plot
@@ -93,3 +95,5 @@ def resultsPage():
 if __name__ == '__main__':
     # Run the application on port 8080
     app.run(debug=True, port=8080)
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+
