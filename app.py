@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request, jsonify
-from flask.helpers import send_file
-import plotly.graph_objects as go
+import os
+
+import plotly
+from flask import Flask, render_template, request, jsonify, send_file
 from plotly.offline import plot
-from datetime import datetime
+import plotly.graph_objects as go
+import json
+from datetime import datetime, timedelta
 
 # Create a Flask application
 app = Flask(__name__)
@@ -31,14 +34,9 @@ data_json = {
             "co2_consumption": 90,
             "co2_saving_percentage_max": 30
         },
-{
-            "rank": 2,
-            "optimal_start_time": "2023-11-01T09:00:00.000Z",
-            "co2_consumption": 80,
-            "co2_saving_percentage_max": 20
-        }
     ]
 }
+
 
 # Define a route for the index page
 @app.route('/')
@@ -68,27 +66,34 @@ def resultsPage():
     start_dates = [date[:-1] for date in start_dates]  # Entferne das 'Z' am Ende
     start_dates = [datetime.fromisoformat(date) for date in start_dates]
 
-    # Add vertical lines to the plot
-    vertical_lines = [go.Scatter(x=[date, date], y=[min(carbon_intensity), max(carbon_intensity)],
-                                 mode='lines', line=dict(color='red', width=2), name=f'Rank {rank} Start Date')
-                      for date, rank in zip(start_dates, ranks)]
-
-    # Define the layout of the plot
+    # Define the layout of the plot with shaded areas
     layout = go.Layout(
         title='CO2 Consumption Forecast',
         xaxis=dict(title='Date and Time'),
-        yaxis=dict(title='Carbon Intensity (gCO2/kWh)')
-    )
+        yaxis=dict(title='Carbon Intensity (gCO2/kWh)'),
+        shapes=[dict(
+            type="rect",
+            x0=start_date,
+            x1=start_date + timedelta(hours=1),  # Hier anpassen, wie lange die Fläche geschraffiert sein soll
+            y0=min(carbon_intensity),
+            y1=max(carbon_intensity),
+            fillcolor="rgba(255, 0, 0, 0.2)",  # Hier kannst du die Farbe anpassen (hier rot mit 20% Deckkraft)
+            layer="below",
+            line=dict(width=0)
+        ) for start_date in start_dates])
 
-    # Create the figure with the data, layout, and vertical lines
-    fig = go.Figure(data=[trace_forecast] + vertical_lines, layout=layout)
+    # Create the figure with the data, layout, and shaded areas
+    fig = go.Figure(data=[trace_forecast], layout=layout)
 
     # Convert the figure to HTML div element
     plot_div = plot(fig, output_type='div', include_plotlyjs=True)
 
-    # Render the results template with the plot div
-    return render_template('results.html', plot_html=plot_div, ranks=ranks)
+    plot_json = json.dumps(fig.data, cls=plotly.utils.PlotlyJSONEncoder)
+    return render_template('results.html', plot_html=plot_div, ranks=ranks, plot_json=plot_json)
 
 
 if __name__ == '__main__':
+    # Run the application on port 8080
+    app.run(debug=True, port=8080)
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+
