@@ -16,6 +16,20 @@
             <!-- The Plotly graph rendered from app.py will be inserted here -->
             {{ plot_html | safe }}
         </div>
+  <div class="row">
+    <div class="col">
+        <!-- Hier fügen wir das Option-Set für die Ränge hinzu -->
+        <label for="rank-selector" class="form-label">Rank auswählen:</label>
+        <select id="rank-selector" class="form-select" aria-label="Rank auswählen">
+            {% for rank in ranks %}
+                <option value="{{ rank }}">{{ rank }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+</div>
+
     </div>
 
     <!-- Bootstrap Bundle with Popper for Bootstrap components to function properly -->

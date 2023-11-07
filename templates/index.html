@@ -93,6 +93,8 @@
             dateFormat: "Y-m-d H:i",
             time_24hr: true,
             minuteIncrement: 15,
+            minDate: "today",
+            maxDate: new Date().fp_incr(2)
         });
 
         flatpickr("#latest_end_time", {
@@ -100,7 +102,7 @@
             dateFormat: "Y-m-d H:i",
             time_24hr: true,
             minuteIncrement: 15,
-            minDate: new Date()
+            minDate: "today",
             maxDate: new Date().fp_incr(2)
         });
     </script>
