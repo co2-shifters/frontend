@@ -27,13 +27,18 @@ def indexPage():
 @app.route('/results', methods=['GET'])
 def resultsPage():
     # Get the data from the API
-    if 'result' in session: 
+    duration = request.args.get('duration')
+
+    if 'result' in session:
         data_json = session['result']
 
 
         # Extract data for plotting
         dates = [entry["datetime"] for entry in data_json["data"]]
         carbon_intensity = [entry["carbonIntensity"] for entry in data_json["data"]]
+
+        # Convert duration to timedelta
+        duration_timedelta = timedelta(minutes=int(duration))
 
         # Create a scatter plot for carbon intensity forecast
         trace_forecast = go.Scatter(
@@ -45,11 +50,10 @@ def resultsPage():
 
         # Extract start dates and ranks
         start_dates = [entry["opt_starttime"] for entry in data_json["opt"]]
-        #ranks = [entry["rank"] for entry in data_json["opt"]]
 
-        # Convert start dates to datetime objects
+        # Convert start dates to datetime objects and add duration
         start_dates = [date[:-1] for date in start_dates]  # Entferne das 'Z' am Ende
-        start_dates = [datetime.fromisoformat(date) for date in start_dates]
+        start_dates = [datetime.fromisoformat(date) + duration_timedelta for date in start_dates]
 
         # Define the layout of the plot with shaded areas
         layout = go.Layout(
@@ -59,7 +63,7 @@ def resultsPage():
             shapes=[dict(
                 type="rect",
                 x0=start_date,
-                x1=start_date + timedelta(hours=1),  # Hier anpassen, wie lange die Fläche geschraffiert sein soll
+                x1=start_date + duration_timedelta, # Hier anpassen, wie lange die Fläche geschraffiert sein soll
                 y0=min(carbon_intensity),
                 y1=max(carbon_intensity),
                 fillcolor="rgba(255, 0, 0, 0.2)",  # Hier kannst du die Farbe anpassen (hier rot mit 20% Deckkraft)
@@ -79,6 +83,7 @@ def resultsPage():
     else:
         # If there's no result, handle the error (e.g., by redirecting the user, showing an error message, etc.)
         return "No result found in session", 404
+
 
 @app.route('/submit', methods=['POST'])
 def submit():

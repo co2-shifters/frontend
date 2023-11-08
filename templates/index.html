@@ -108,7 +108,8 @@
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            window.location.href = '/results';
+            // Hier füge die Dauer zur URL hinzu (oder als Parameter)
+            window.location.href = '/results?duration=' + duration;
         })
         .catch((error) => {
             console.error('Error:', error);
