@@ -1,7 +1,7 @@
 import os
 import plotly
 import requests
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file, session
 from plotly.offline import plot
 import plotly.graph_objects as go
 import json
@@ -12,101 +12,10 @@ import requests
 # Create a Flask application
 app = Flask(__name__)
 
-# Static JSON data (this would normally come from a data source or be dynamically generated)
-data_json = {
-    "zone": "CH",
-    "forecast": [
-        {
-            "carbonIntensity": 95,
-            "datetime": "2023-11-01T06:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 90,
-            "datetime": "2023-11-01T07:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 107,
-            "datetime": "2023-11-01T08:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 85,
-            "datetime": "2023-11-01T09:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 98,
-            "datetime": "2023-11-01T10:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 100,
-            "datetime": "2023-11-01T11:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 105,
-            "datetime": "2023-11-01T12:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 92,
-            "datetime": "2023-11-01T13:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 88,
-            "datetime": "2023-11-01T14:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 94,
-            "datetime": "2023-11-01T15:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 96,
-            "datetime": "2023-11-01T16:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 102,
-            "datetime": "2023-11-01T17:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 97,
-            "datetime": "2023-11-01T18:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 89,
-            "datetime": "2023-11-01T19:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 91,
-            "datetime": "2023-11-01T20:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 86,
-            "datetime": "2023-11-01T21:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 93,
-            "datetime": "2023-11-01T22:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 99,
-            "datetime": "2023-11-01T23:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 101,
-            "datetime": "2023-11-02T00:00:00.000Z"
-        },
-        {
-            "carbonIntensity": 103,
-            "datetime": "2023-11-02T01:00:00.000Z"
-        }
-    ],
+app.config['SECRET_KEY'] = '*BJTLm3*$`-W"5kd'
 
-    "optimisation": [
-        {
-            "rank": 1,
-            "optimal_start_time": "2023-11-01T07:00:00.000Z",
-            "co2_consumption": 90,
-            "co2_saving_percentage_max": 30
-        },
-    ]
-}
+# Static JSON data (this would normally come from a data source or be dynamically generated)
+data_json = {}
 
 
 # Define a route for the index page
@@ -117,51 +26,59 @@ def indexPage():
 
 @app.route('/results', methods=['GET'])
 def resultsPage():
-    # Extract data for plotting
-    dates = [entry["datetime"] for entry in data_json["forecast"]]
-    carbon_intensity = [entry["carbonIntensity"] for entry in data_json["forecast"]]
+    # Get the data from the API
+    if 'result' in session: 
+        data_json = session['result']
 
-    # Create a scatter plot for carbon intensity forecast
-    trace_forecast = go.Scatter(
-        x=dates,
-        y=carbon_intensity,
-        mode='lines+markers',
-        name='Carbon Intensity Forecast'
-    )
 
-    # Extract start dates and ranks
-    start_dates = [entry["optimal_start_time"] for entry in data_json["optimisation"]]
-    ranks = [entry["rank"] for entry in data_json["optimisation"]]
+        # Extract data for plotting
+        dates = [entry["datetime"] for entry in data_json["data"]]
+        carbon_intensity = [entry["carbonIntensity"] for entry in data_json["data"]]
 
-    # Convert start dates to datetime objects
-    start_dates = [date[:-1] for date in start_dates]  # Entferne das 'Z' am Ende
-    start_dates = [datetime.fromisoformat(date) for date in start_dates]
+        # Create a scatter plot for carbon intensity forecast
+        trace_forecast = go.Scatter(
+            x=dates,
+            y=carbon_intensity,
+            mode='lines+markers',
+            name='Carbon Intensity Forecast'
+        )
 
-    # Define the layout of the plot with shaded areas
-    layout = go.Layout(
-        title='CO2 Consumption Forecast',
-        xaxis=dict(title='Date and Time'),
-        yaxis=dict(title='Carbon Intensity (gCO2/kWh)'),
-        shapes=[dict(
-            type="rect",
-            x0=start_date,
-            x1=start_date + timedelta(hours=1),  # Hier anpassen, wie lange die Fläche geschraffiert sein soll
-            y0=min(carbon_intensity),
-            y1=max(carbon_intensity),
-            fillcolor="rgba(255, 0, 0, 0.2)",  # Hier kannst du die Farbe anpassen (hier rot mit 20% Deckkraft)
-            layer="below",
-            line=dict(width=0)
-        ) for start_date in start_dates])
+        # Extract start dates and ranks
+        start_dates = [entry["opt_starttime"] for entry in data_json["opt"]]
+        #ranks = [entry["rank"] for entry in data_json["opt"]]
 
-    # Create the figure with the data, layout, and shaded areas
-    fig = go.Figure(data=[trace_forecast], layout=layout)
+        # Convert start dates to datetime objects
+        start_dates = [date[:-1] for date in start_dates]  # Entferne das 'Z' am Ende
+        start_dates = [datetime.fromisoformat(date) for date in start_dates]
 
-    # Convert the figure to HTML div element
-    plot_div = plot(fig, output_type='div', include_plotlyjs=True)
+        # Define the layout of the plot with shaded areas
+        layout = go.Layout(
+            title='CO2 Consumption Forecast',
+            xaxis=dict(title='Date and Time'),
+            yaxis=dict(title='Carbon Intensity (gCO2/kWh)'),
+            shapes=[dict(
+                type="rect",
+                x0=start_date,
+                x1=start_date + timedelta(hours=1),  # Hier anpassen, wie lange die Fläche geschraffiert sein soll
+                y0=min(carbon_intensity),
+                y1=max(carbon_intensity),
+                fillcolor="rgba(255, 0, 0, 0.2)",  # Hier kannst du die Farbe anpassen (hier rot mit 20% Deckkraft)
+                layer="below",
+                line=dict(width=0)
+            ) for start_date in start_dates])
 
-    plot_json = json.dumps(fig.data, cls=plotly.utils.PlotlyJSONEncoder)
-    return render_template('results.html', plot_html=plot_div, ranks=ranks, plot_json=plot_json)
+        # Create the figure with the data, layout, and shaded areas
+        fig = go.Figure(data=[trace_forecast], layout=layout)
 
+        # Convert the figure to HTML div element
+        plot_div = plot(fig, output_type='div', include_plotlyjs=True)
+
+        plot_json = json.dumps(fig.data, cls=plotly.utils.PlotlyJSONEncoder)
+        return render_template('results.html', plot_html=plot_div, plot_json=plot_json)
+
+    else:
+        # If there's no result, handle the error (e.g., by redirecting the user, showing an error message, etc.)
+        return "No result found in session", 404
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -183,6 +100,7 @@ def submit():
         result = response.json()
         print("API response:", result)
         # Return this result back to the client
+        session['result'] = result
         return jsonify(result), 200
     else:
         # The external API returned an error
