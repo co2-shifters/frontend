@@ -182,14 +182,13 @@ def submit():
         # The external API returned a successful response
         result = response.json()
         print("API response:", result)
-        # You can now return this result back to the client or process it further
-        response = requests.get(request.url_root + 'results')
-        return jsonify(result), 200, {response}
+        # Return this result back to the client
+        return jsonify(result), 200
     else:
         # The external API returned an error
         print("Failed to call API, status code:", response.status_code)
-        return jsonify(
-            {'error': 'Failed to call external API', 'status_code': response.status_code}), response.status_code
+        return jsonify({'error': 'Failed to call external API', 'status_code': response.status_code}), response.status_code
+
 
 if __name__ == '__main__':
     # Run the application on port 8080
