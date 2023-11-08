@@ -81,23 +81,23 @@
         // Background change script
     </script>
     <script>
-        function handleSubmit(event) {
-    event.preventDefault(); // Prevent the default form submission
+    function handleSubmit(event) {
+        event.preventDefault(); // Prevent the default form submission
 
-    // Extract values from the form
-    const earliestStartTime = document.getElementById('earliest_start_time').value;
-    const latestEndTime = document.getElementById('latest_end_time').value;
-    const duration = document.getElementById('duration').value;
+        // Extract values from the form
+        const earliestStartTime = document.getElementById('earliest_start_time').value;
+        const latestEndTime = document.getElementById('latest_end_time').value;
+        const duration = document.getElementById('duration').value;
 
-    // Convert to ISO string and integer
-    const payload = {
-        "earliest_start_time": new Date(earliestStartTime).toISOString(),
-        "latest_end_time": new Date(latestEndTime).toISOString(),
-        "duration": parseInt(duration)
-    };
+        // Convert to ISO string and integer
+        const payload = {
+            "earliest_start_time": new Date(earliestStartTime).toISOString(),
+            "latest_end_time": new Date(latestEndTime).toISOString(),
+            "duration": parseInt(duration)
+        };
 
-    // Send the payload to the Flask /submit endpoint
-    fetch('/submit', {
+        // Send the payload to the Flask /submit endpoint
+        fetch('/submit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -107,14 +107,15 @@
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            // Here you can handle the response, e.g., redirect to another page or display a success message
-            // window.location.href = '/success'; // Example redirect
+            // Redirect to the /results endpoint to show the API data plotted
+            window.location.href = '/results';
         })
         .catch((error) => {
             console.error('Error:', error);
             // Here you can handle any errors, e.g., display an error message to the user
         });
     }
+
 
     </script>
     <script>
