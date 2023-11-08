@@ -18,7 +18,7 @@
 
     h1 {
         text-align: center;
-        color: #333;
+        color: white;
         font-size: 36px;
     }
 
@@ -110,7 +110,7 @@
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            // Hier füge die Dauer zur URL hinzu (oder als Parameter)
+            // Hier füge die Dauer zur URL hinzu
             window.location.href = '/results?duration=' + duration;
         })
         .catch((error) => {
@@ -136,7 +136,14 @@
         const color = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.background = color;
         confetti.style.left = Math.random() * 100 + 'vw';
-        confetti.style.top = Math.random() * 100 + 'vh';
+        const position = Math.random() * 100 + 'vh';
+        confetti.style.top = position;
+        confetti.style.opacity = Math.random() * 0.5 + 0.5; // Setze die Opazität zufällig zwischen 0.5 und 1
+
+        // Überprüfe, ob die Position im unteren Viertel des Bildschirms liegt
+        if (parseInt(position) > 75) {
+            confetti.style.backgroundColor = '#8B4513'; // Setze die Farbe auf braun
+        }
 
         document.body.appendChild(confetti);
     }
