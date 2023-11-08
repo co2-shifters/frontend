@@ -71,7 +71,9 @@
     </style>
 </head>
 <body>
-    <h1>CO2-Shifters - Verarbeitungszeitraum</h1>
+    <h1>
+        <img src="static/images/logo.png" alt="Header Image" width="20%" height="auto">
+    </h1>
     <form onsubmit="handleConfettiSubmit(event)">
         <label for="earliest_start_time">Frühester Zeitpunkt zum Starten:</label>
         <input type="text" id="earliest_start_time" name="earliest_start_time" required><br>
@@ -130,7 +132,7 @@
     function createConfetti() {
         const confetti = document.createElement('div');
         confetti.classList.add('confetti');
-        const colors = ['#FF6F61', '#6B4226', '#9A1750', '#F0E68C', '#6495ED', '#32CD32'];
+        const colors = ['#008000', '#8B4513'];
         const color = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.background = color;
         confetti.style.left = Math.random() * 100 + 'vw';
