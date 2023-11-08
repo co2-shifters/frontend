@@ -52,6 +52,9 @@ def resultsPage():
         # Extract start dates and ranks
         start_dates = [entry["opt_starttime"] for entry in data_json["opt"]]
         co2_saving = [entry["percentage_saved"] for entry in data_json["opt"]][0]
+        start_date = [entry["opt_starttime"] for entry in data_json["opt"]][0]
+        start_date_object = datetime.fromisoformat(start_date.replace('Z', '+00:00'))
+        formatted_start_date = start_date_object.strftime('%Y-%m-%d %H:%M:%S')
         
 
         # Convert start dates to datetime objects and add duration
@@ -81,7 +84,7 @@ def resultsPage():
         plot_div = plot(fig, output_type='div', include_plotlyjs=True)
 
         plot_json = json.dumps(fig.data, cls=plotly.utils.PlotlyJSONEncoder)
-        return render_template('results.html', plot_html=plot_div, plot_json=plot_json, co2_saving=co2_saving)
+        return render_template('results.html', plot_html=plot_div, plot_json=plot_json, co2_saving=co2_saving, formatted_start_date=formatted_start_date)
 
     else:
         # If there's no result, handle the error (e.g., by redirecting the user, showing an error message, etc.)
