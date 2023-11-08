@@ -40,13 +40,13 @@
 
     input[type="text"],
     input[type="number"] {
-        width: calc(100% - 20px); /* Breite abzüglich des 10px-Paddings auf jeder Seite */
+        width: calc(100% - 20px);
         padding: 10px;
         margin-bottom: 15px;
         border: 1px solid #ccc;
         border-radius: 3px;
         font-size: 18px;
-        box-sizing: border-box; /* Stellt sicher, dass das Padding in die Berechnung der Breite einbezogen wird */
+        box-sizing: border-box;
     }
 
     input[type="submit"] {
@@ -61,11 +61,18 @@
     input[type="submit"]:hover {
         background-color: #0056b3;
     }
+
+    .confetti {
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        animation: fall 2s linear infinite;
+    }
     </style>
 </head>
 <body>
     <h1>CO2-Shifters - Verarbeitungszeitraum</h1>
-    <form onsubmit="handleSubmit(event)">
+    <form onsubmit="handleConfettiSubmit(event)">
         <label for="earliest_start_time">Frühester Zeitpunkt zum Starten:</label>
         <input type="text" id="earliest_start_time" name="earliest_start_time" required><br>
 
@@ -78,25 +85,19 @@
         <input type="submit" value="Berechnen">
     </form>
     <script>
-        // Background change script
-    </script>
-    <script>
     function handleSubmit(event) {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault();
 
-        // Extract values from the form
         const earliestStartTime = document.getElementById('earliest_start_time').value;
         const latestEndTime = document.getElementById('latest_end_time').value;
         const duration = document.getElementById('duration').value;
 
-        // Convert to ISO string and integer
         const payload = {
             "earliest_start_time": new Date(earliestStartTime).toISOString(),
             "latest_end_time": new Date(latestEndTime).toISOString(),
             "duration": parseInt(duration)
         };
 
-        // Send the payload to the Flask /submit endpoint
         fetch('/submit', {
             method: 'POST',
             headers: {
@@ -107,13 +108,34 @@
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            // Redirect to the /results endpoint to show the API data plotted
             window.location.href = '/results';
         })
         .catch((error) => {
             console.error('Error:', error);
-            // Here you can handle any errors, e.g., display an error message to the user
         });
+    }
+
+    function handleConfettiSubmit(event) {
+        event.preventDefault();
+
+        for (let i = 0; i < 100; i++) {
+            createConfetti();
+        }
+
+        // Führe den ursprünglichen Submit-Vorgang aus
+        handleSubmit(event);
+    }
+
+    function createConfetti() {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        const colors = ['#FF6F61', '#6B4226', '#9A1750', '#F0E68C', '#6495ED', '#32CD32'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.background = color;
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = Math.random() * 100 + 'vh';
+
+        document.body.appendChild(confetti);
     }
     </script>
     <script>
@@ -137,5 +159,12 @@
             maxDate: new Date().fp_incr(2)
         });
     </script>
+    <style>
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+    </style>
 </body>
 </html>
