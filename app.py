@@ -16,6 +16,7 @@ app.config['SECRET_KEY'] = '*BJTLm3*$`-W"5kd'
 
 # Static JSON data (this would normally come from a data source or be dynamically generated)
 data_json = {}
+co2_saving = {}
 
 
 # Define a route for the index page
@@ -31,7 +32,7 @@ def resultsPage():
 
     if 'result' in session:
         data_json = session['result']
-
+        
 
         # Extract data for plotting
         dates = [entry["datetime"] for entry in data_json["data"]]
@@ -50,6 +51,8 @@ def resultsPage():
 
         # Extract start dates and ranks
         start_dates = [entry["opt_starttime"] for entry in data_json["opt"]]
+        co2_saving = [entry["percentage_saved"] for entry in data_json["opt"]][0]
+        
 
         # Convert start dates to datetime objects and add duration
         start_dates = [date[:-1] for date in start_dates]  # Entferne das 'Z' am Ende
@@ -78,7 +81,7 @@ def resultsPage():
         plot_div = plot(fig, output_type='div', include_plotlyjs=True)
 
         plot_json = json.dumps(fig.data, cls=plotly.utils.PlotlyJSONEncoder)
-        return render_template('results.html', plot_html=plot_div, plot_json=plot_json)
+        return render_template('results.html', plot_html=plot_div, plot_json=plot_json, co2_saving=co2_saving)
 
     else:
         # If there's no result, handle the error (e.g., by redirecting the user, showing an error message, etc.)
