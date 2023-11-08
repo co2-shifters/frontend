@@ -59,7 +59,7 @@ def resultsPage():
 
         # Convert start dates to datetime objects and add duration
         start_dates = [date[:-1] for date in start_dates]  # Entferne das 'Z' am Ende
-        start_dates = [datetime.fromisoformat(date) + duration_timedelta for date in start_dates]
+        start_dates = [datetime.fromisoformat(date) for date in start_dates]
 
         # Define the layout of the plot with shaded areas
         layout = go.Layout(
