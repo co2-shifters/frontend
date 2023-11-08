@@ -46,7 +46,8 @@ def resultsPage():
             x=dates,
             y=carbon_intensity,
             mode='lines+markers',
-            name='Carbon Intensity Forecast'
+            name='Carbon Intensity Forecast',
+            line=dict(shape='spline', color='darkgreen')
         )
 
         # Extract start dates and ranks
@@ -66,13 +67,14 @@ def resultsPage():
             title='CO2 Consumption Forecast',
             xaxis=dict(title='Date and Time'),
             yaxis=dict(title='Carbon Intensity (gCO2/kWh)'),
+            plot_bgcolor='#B0CC9B',
             shapes=[dict(
                 type="rect",
                 x0=start_date,
                 x1=start_date + duration_timedelta, # Hier anpassen, wie lange die Fläche geschraffiert sein soll
                 y0=min(carbon_intensity),
                 y1=max(carbon_intensity),
-                fillcolor="rgba(255, 0, 0, 0.2)",  # Hier kannst du die Farbe anpassen (hier rot mit 20% Deckkraft)
+                fillcolor="rgba(252, 253, 255, 0.9)",  # Hier kannst du die Farbe anpassen (hier rot mit 20% Deckkraft)
                 layer="below",
                 line=dict(width=0)
             ) for start_date in start_dates])
